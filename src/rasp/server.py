@@ -3,8 +3,9 @@ from pathlib import Path
 from game import ColorGame
 import threading
 import time
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../webapp", static_url_path="/")
 
 # Initialize the game
 game = ColorGame(initial_lives=3, initial_time=30.0)
@@ -13,21 +14,12 @@ game = ColorGame(initial_lives=3, initial_time=30.0)
 game_active = False
 time_thread = None
 
-def update_time_continuously():
-    """Background thread that continuously updates game time"""
-    global game_active
-    while game_active:
-        time.sleep(0.1)  # Update every 100ms
-        game.elapseTime(0.1)
-        if game.isGameOver():
-            game_active = False
-
 # absolute or relative path to your HTML file
 html_path = Path("../webapp/index.html")
 
 @app.route("/")
 def home():
-    return send_file(html_path)
+    return send_file(os.path.join(app.static_folder, "index.html"))
 
 
 @app.route("/api/start", methods=["POST"])
@@ -36,12 +28,6 @@ def start_game():
     global game_active, time_thread
     
     game.startGame()
-    
-    # Start time tracking thread if not already running
-    if not game_active:
-        game_active = True
-        time_thread = threading.Thread(target=update_time_continuously, daemon=True)
-        time_thread.start()
     
     return jsonify({
         "success": True
@@ -52,7 +38,7 @@ def start_game():
 def get_colors():
     """Get the current inputted colors"""
     return jsonify({
-        "inputted_colors": game._correctColors
+        "inputted_colors": game["inputted_colors"]
     })
 
 
