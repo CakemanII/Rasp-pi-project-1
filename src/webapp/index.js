@@ -162,9 +162,8 @@ function fetchStatus() {
         }
 
         // Process colors/progress and detect correct inputs or combo completion
-        const colors = colorsData && Array.isArray(colorsData.colors) ? colorsData.colors : [];
-        const correctCount = colorsData && typeof colorsData.correct_count === 'number' ? colorsData.correct_count : 0;
-        const total = colors.length > 0 ? colors.length : 3;
+        const correctlyInputtedColors = colorsData && Array.isArray(colorsData.colors) ? colorsData.colors : [];
+        const correctCount = colorsData.correct_count
 
         // If correct_count increased, mark lastClickedBtn as correct
         if (correctCount > prevCorrectCount) {
@@ -174,17 +173,19 @@ function fetchStatus() {
                 lastClickedBtn.classList.remove('flash');
                 void lastClickedBtn.offsetWidth;
                 lastClickedBtn.classList.add('flash');
+                lastClickedBtn.classList.remove('btn-correct');
                 setTimeout(() => lastClickedBtn && lastClickedBtn.classList.remove('btn-correct'), 500);
             }
         }
 
-        // If correct_count decreased unexpectedly (server reset on wrong), mark wrong
+        // If correct_count decreased unexpectedly (reset on wrong), mark wrong
         if (correctCount < prevCorrectCount) {
             if (lastClickedBtn) {
                 lastClickedBtn.classList.add('btn-wrong');
                 lastClickedBtn.classList.remove('flash');
                 void lastClickedBtn.offsetWidth;
                 lastClickedBtn.classList.add('flash');
+                lastClickedBtn.classList.remove('btn-wrong');
                 setTimeout(() => lastClickedBtn && lastClickedBtn.classList.remove('btn-wrong'), 600);
             }
         }
@@ -198,7 +199,7 @@ function fetchStatus() {
             setTimeout(() => { comboLock = false; }, 1400);
         }
 
-        renderProgress(colors, correctCount);
+        renderProgress(correctlyInputtedColors, correctCount);
         prevCorrectCount = correctCount;
         prevTotalSlots = total;
 

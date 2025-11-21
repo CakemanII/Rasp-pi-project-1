@@ -30,11 +30,11 @@ class LEDController:
     def celebrate(self):
         """Flash all LEDs in a celebratory pattern."""
         self._flashing = True
-        for _ in range(3):
+        for _ in range(5):
             for led in self.leds.values():
                 led.on()
-            sleep(0.2)
+            sleep(0.25)
             for led in self.leds.values():
                 led.off()
-            sleep(0.2)
+            sleep(0.25)
         self._flashing = False
