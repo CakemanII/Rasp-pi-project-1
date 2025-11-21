@@ -100,7 +100,7 @@ class ProgressVisualHandler {
     }
 
     update(colorData) {
-        if (!progressBox) return;
+        if (!this.progressBox) return;
 
         // Clear existing
         this.progressBox.innerHTML = '';
