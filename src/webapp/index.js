@@ -129,7 +129,10 @@ class ProgressVisualHandler {
 }
 
 class ButtonVisualHandler {
-    constructor() {}
+    constructor() 
+    {
+        this.initializeButtons();
+    }
 
     initializeButtons()
     {
