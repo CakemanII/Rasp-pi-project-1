@@ -289,7 +289,8 @@ class GameScreenHandler {
         this.startScreen = document.getElementById('start-screen');
         this.startBtn = document.getElementById('start-btn');
         this.gameRoot = document.getElementById('game-root');
-        this.startRoundIndicator = null;
+        this.startRoundIndicator = document.getElementById('flash-indicator');
+        this.roundNumberDisplay = document.getElementById('round-counter');
 
         /* START BUTTON */
         this.startBtn.addEventListener('click', () => {
@@ -330,13 +331,6 @@ class GameScreenHandler {
 
     displayStartRoundFlashingText(visible)
     {
-        // Create indicator lazily
-        if (!this.startRoundIndicator) {
-            this.startRoundIndicator = document.getElementById('flash-indicator');
-        }
-
-        if (!this.startRoundIndicator) return;
-
         const container = document.querySelector('.container');
         if (visible) {
             this.startRoundIndicator.style.display = '';
@@ -350,13 +344,24 @@ class GameScreenHandler {
         }
     }
 
+    updateRoundNumberDisplay(roundNumber)
+    {
+        if (!this.roundNumberDisplay) return;
+        // Display 1-based round for users (round starts at 0 internally)
+        const displayNumber = Number.isFinite(roundNumber) ? roundNumber : 0;
+        this.roundNumberDisplay.textContent = `Round ${displayNumber}`;
+    }
+
     update(statusData)
     {
         const gameover = statusData["is_gameover"];
         const is_running = statusData["game_started"];
         const start_round_flashing = statusData["start_round_flashing"];
+        const roundNumber = statusData["round"];
 
         this.displayStartRoundFlashingText(start_round_flashing);
+
+        this.updateRoundNumberDisplay(roundNumber);
 
         if (gameover) {
             this.showRestartScreen();
