@@ -22,6 +22,8 @@ class ColorGame:
         self._elapsingTime: bool = False
         self._gameStarted: bool = False
 
+        self._input_enabled: bool = False
+
         self._max_time: float = initial_time
 
         self._correctColors: list[str] = []
@@ -73,6 +75,7 @@ class ColorGame:
 
         # Start elapsing time
         self._startElapseTime()
+        self._input_enabled = True
 
     def _generateColors(self) -> list[str]:
         # Get total count of buttons
@@ -91,6 +94,8 @@ class ColorGame:
 
     #region Input Handling
     def colorInput(self, selectedColor: str):
+        if not self._input_enabled:
+            return
         # Check if the input is correct
         targetColor = self._correctColors[self._correctInputCount]
         if selectedColor == targetColor:
@@ -106,18 +111,13 @@ class ColorGame:
         if self.isRoundComplete():
             # Pause elapsing time for a short celebration, then start next round
             self._stopElapseTime()
+            self._input_enabled = False
             self._inCelebration = True
             # Schedule next round after 2 seconds (celebration)
-            threading.Thread(target=self._celebration_and_start, daemon=True).start()
-
-    def _celebration_and_start(self):
-        try:
-            time.sleep(2.0)
-            self._inCelebration = False
-            self._startRound()
-        except Exception:
-            # ensure we don't crash the thread
-            pass
+            # Wait for LED to stop flashing
+            while self._led_controller._flashing: time.sleep(0.1)
+            self._led_controller.celebrate()
+            time.sleep(2)
 
     def _incorrectInput(self):
         # Decrement Lives
@@ -133,6 +133,7 @@ class ColorGame:
 
     def _gameOver(self):
         # User lost
+        self._input_enabled = False
         pass
 
     #region Elapse Time Handling
@@ -173,6 +174,9 @@ class ColorGame:
     
     def hasGameStarted(self) -> bool:
         return self._gameStarted
+    
+    def isInputEnabled(self) -> bool:
+        return self._input_enabled
 
     #endregion
 
