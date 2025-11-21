@@ -43,7 +43,7 @@ class LEDController:
         """Flash a game over pattern."""
         self._flashing = True
         self.leds['red'].on()
-        for _ in range(4):
+        for _ in range(6):
             self.leds['green'].on()
             sleep(0.5)
             self.leds['green'].off()
