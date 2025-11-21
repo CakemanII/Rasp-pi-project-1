@@ -161,16 +161,16 @@ class ButtonVisualHandler {
                     button.classList.add('btn-correct');
                     button.classList.remove('flash');
                     void button.offsetWidth;
-                    button.classList.remove('btn-correct');
                     button.classList.add('flash');
+                    setTimeout(() => { button.classList.remove('btn-correct'); }, 500);
 
                 } else if (feedback === "wrong") {
                     // Mark button as wrong
                     button.classList.add('btn-wrong');
                     button.classList.remove('flash');
                     void button.offsetWidth;
-                    button.classList.remove('btn-wrong');
                     button.classList.add('flash');
+                    setTimeout(() => { button.classList.remove('btn-wrong'); }, 500);
 
                 } else if (feedback === "input_disabled") {
                     // Don't provide feedback if input is disabled
