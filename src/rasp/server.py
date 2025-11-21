@@ -96,7 +96,7 @@ def get_status():
         "round": data["round"],
         "lives": data["lives"],
         "game_started": game.hasGameStarted(),
-        "is_game_over": game.isGameOver(),
+        "is_gameover": game.isGameOver(),
         "is_round_complete": game.isRoundComplete()
     })
 

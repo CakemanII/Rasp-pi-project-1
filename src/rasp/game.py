@@ -55,6 +55,9 @@ class ColorGame:
         '''
         Starts the game by initializing the first round.
         '''
+        if self._gameStarted:
+            print("Game has already started!")
+            return
         self._gameStarted = True
         self._startRound()
 

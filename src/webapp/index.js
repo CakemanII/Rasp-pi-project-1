@@ -254,7 +254,6 @@ class GameScreenHandler {
                 this.gameRoot.setAttribute('aria-hidden','false');
             })
             .catch(() => {
-                // still hide and start polling for local dev
                 this.startScreen.style.display = 'none';
                 this.gameRoot.setAttribute('aria-hidden','false');
             });
