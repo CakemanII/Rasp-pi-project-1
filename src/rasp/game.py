@@ -130,6 +130,9 @@ class ColorGame:
         # Check for game over
         if self.isGameOver():
             self._gameOver()
+        else:
+            # Flash the correct sequence again
+            self._led_controller.flash_sequence(self._correctColors, flash_duration=0.6, pause_duration=0.3)
     #endregion
 
     def _gameOver(self):
