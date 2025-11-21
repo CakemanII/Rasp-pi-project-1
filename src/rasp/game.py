@@ -173,9 +173,7 @@ class ColorGame:
             delta_time: Time in seconds to subtract from remaining time
         """
         self._previousTime = datetime.datetime.now()
-        print("1")
-        while not self.isGameOver() or self._gameStarted == False:
-            print("2")
+        while True:
             time.sleep(UPDATE_TIME_DELAY)
             if self._elapsingTime == False:
                 continue
