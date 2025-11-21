@@ -157,6 +157,7 @@ class ButtonVisualHandler {
 
                 // Visual feedback handled in the click listener above
                 const feedback = results["feedback"];
+                console.log("Feedback:", feedback);
                 if (feedback === "success") {
                     button.classList.add('btn-correct');
                     button.classList.remove('flash');
