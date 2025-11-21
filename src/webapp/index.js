@@ -100,8 +100,6 @@ class ProgressVisualHandler {
     }
 
     update(colorData) {
-        if (!this.progressBox) return;
-
         // Clear existing
         this.progressBox.innerHTML = '';
         // Determine total slots
@@ -267,7 +265,7 @@ class GameScreenHandler {
         this.startScreen.style.display = 'flex';
         this.gameRoot.setAttribute('aria-hidden','true');
         this.startScreen.querySelector('#start-btn').textContent = 'Restart';
-        this.progressVisualHandler.renderProgress([], 0);
+        this.progressVisualHandler.update();
     }
 
     showStartScreen()
@@ -275,7 +273,7 @@ class GameScreenHandler {
         this.startScreen.style.display = 'flex';
         this.gameRoot.setAttribute('aria-hidden','true');
         this.startScreen.querySelector('#start-btn').textContent = 'Start';
-        this.progressVisualHandler.renderProgress([], 0);
+        this.progressVisualHandler.update();
     }
 
     showGameScreen()
