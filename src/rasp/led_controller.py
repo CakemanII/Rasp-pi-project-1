@@ -32,9 +32,5 @@ class LEDController:
                 led.off()
             sleep(flash_interval)
 
-
-led = LED(17)
-
-led.on()
-sleep(2)
-led.off()
+controller = LEDController()
+controller.flash_sequence(["red", "green", "blue"])
