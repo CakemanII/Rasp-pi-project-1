@@ -2,9 +2,9 @@ from gpiozero import LED
 from time import sleep
 
 LED_PINS = {
-    "blue": 22,
+    "blue": 17,
     "green": 27,
-    "red": 17
+    "red": 22
 }
 
 class LEDController:
@@ -33,4 +33,4 @@ class LEDController:
             sleep(flash_interval)
 
 controller = LEDController()
-controller.flash_sequence(["red", "green", "blue"], 0.15, 0.1)
+controller.flash_sequence(["blue", "blue", "blue"], 0.15, 0.1)
