@@ -33,4 +33,4 @@ class LEDController:
             sleep(flash_interval)
 
 controller = LEDController()
-controller.flash_sequence(["red", "green", "blue"])
+controller.flash_sequence(["red", "green", "blue"], 0.15, 0.1)
