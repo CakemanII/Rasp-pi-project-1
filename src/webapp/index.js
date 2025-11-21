@@ -103,15 +103,15 @@ class HeartVisualHandler {
 
 class TimerVisualHandler {
     constructor() {
-        setInterval(() => this.updateTimer(), 50);
         this.timerBox = document.getElementById("timer");
+        setInterval(() => this.updateTimer(), 50);
     }
 
     updateTimer() {
         fetch('/api/time_remaining').then(r => r.ok ? r.json() : null)
         .then((timeReq) => {
             const time_remaining = timeReq.time_remaining;
-            this.timerBox.textContent = `Time: ${Math.max(0, time_remaining).toFixed(1)}s`;
+            this.timerBox.textContent = `Time: ${Math.max(0, time_remaining).toFixed(0)}s`;
         })
         .catch(() => null);
     }

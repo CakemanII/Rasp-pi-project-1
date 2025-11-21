@@ -73,6 +73,9 @@ class ColorGame:
         # Get the new colors
         self._correctColors = self._generateColors()
 
+        # Delay
+        time.sleep(1)
+
         # Flash the colors
         self._led_controller.flash_sequence(self._correctColors, flash_duration=0.6, pause_duration=0.3)
 
