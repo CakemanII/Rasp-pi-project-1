@@ -75,6 +75,8 @@ class HeartVisualHandler {
             this._prev_lives--;
         }
 
+        this._prev_lives = livesCount;
+
         // Update prev lives
         this.renderHearts();
     }
