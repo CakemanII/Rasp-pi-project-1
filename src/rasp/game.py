@@ -102,10 +102,10 @@ class ColorGame:
         # Check if the input is correct
         targetColor = self._correctColors[self._correctInputCount]
         if selectedColor == targetColor:
-            threading.Thread(self._correctInput()).start()
+            threading.Thread(self._correctInput).start()
             return "success"
         else:
-            threading.Thread(self._incorrectInput()).start()
+            threading.Thread(self._incorrectInput).start()
             return "wrong"
 
 
