@@ -179,7 +179,7 @@ class ButtonVisualHandler {
                     } else if (feedback === "input_disabled") {
                         // Don't provide feedback if input is disabled
                     }
-                }).catch(() => {});
+                }).catch(() => { console.log("Input request failed"); });
             });
         });
     }
