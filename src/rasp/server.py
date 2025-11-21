@@ -18,6 +18,13 @@ time_thread = None
 # absolute or relative path to your HTML file
 html_path = Path("../webapp/index.html")
 
+@app.after_request
+def add_header(r):
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    return r
+
 @app.route("/")
 def home():
     return send_file(os.path.join(app.static_folder, "index.html"))
