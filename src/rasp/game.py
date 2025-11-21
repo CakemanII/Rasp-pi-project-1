@@ -117,7 +117,8 @@ class ColorGame:
             # Wait for LED to stop flashing
             while self._led_controller._flashing: time.sleep(0.1)
             self._led_controller.celebrate()
-            time.sleep(2)
+            self._inCelebration = False
+            self._startRound()
 
     def _incorrectInput(self):
         # Decrement Lives

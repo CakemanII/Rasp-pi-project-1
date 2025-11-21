@@ -190,7 +190,8 @@ function fetchStatus() {
         }
 
         // Combo complete: just reached full correct count
-        if (correctCount === total && total > 0 && prevCorrectCount < total && !comboLock) {
+        // Add a condition to ensure the server confirms the combo completion
+        if (correctCount === total && total > 0 && prevCorrectCount < total && !comboLock && colorsData.combo_complete) {
             comboLock = true;
             playComboComplete();
             // allow future combos after a short delay
