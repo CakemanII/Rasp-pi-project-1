@@ -68,25 +68,36 @@ class HeartVisualHandler {
 
     update(livesCount) {
         console.log(1);
+
+        // First update — just render and store value
         if (this._prev_lives === null) {
             this._prev_lives = livesCount;
             this.renderHearts();
             return;
         }
+
         console.log(2);
-        // Fetch current lives from server
+
+        // No change → nothing to do
         if (livesCount === this._prev_lives) return;
+
         console.log(3);
-        // Explode hearts for lost lives
-        while (lives < this._prev_lives) {
-            this.explodeHeart();
-            this._prev_lives--;
-        }
-        console.log(4);
+
+        // If lives decreased → play explosion animation
         if (livesCount < this._prev_lives) {
-            this.renderHearts();
-            this._prev_lives = livesCount;
+            while (this._prev_lives > livesCount) {
+                this.explodeHeart();
+                this._prev_lives--;
+            }
         }
+
+        // If lives increased → re-render hearts completely
+        if (livesCount > this._prev_lives) {
+            this._prev_lives = livesCount;
+            this.renderHearts();
+        }
+
+        console.log(4);
     }
 }
 
