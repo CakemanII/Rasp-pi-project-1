@@ -31,13 +31,13 @@ class LEDController:
         """Flash all LEDs in a celebratory pattern."""
         self._flashing = True
         self.leds['green'].on()
-        for _ in range(4):
+        for _ in range(6):
             self.leds['red'].on()
             self.leds['blue'].on()
-            sleep(0.3)
+            sleep(0.25)
             self.leds['red'].off()
             self.leds['blue'].off()
-            sleep(0.3)
+            sleep(0.25)
         self.leds['green'].off()
         self._flashing = False
 
