@@ -341,7 +341,7 @@ class GameScreenHandler {
         }
 
             // Convert to 1-based human friendly round number
-            const displayNumber = Math.max(0, Number(roundNumber)) + 1;
+            const displayNumber = Math.max(0, Number(roundNumber));
             // Show as simple centered number (users asked for 'absolutely centered')
         this.roundNumberDisplay.textContent = `${displayNumber}`;
     }
