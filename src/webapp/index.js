@@ -250,7 +250,7 @@ class CelebrationVisualHandler {
             conf.style.animationDuration = (900 + Math.random() * 800) + 'ms';
             document.body.appendChild(conf);
             // remove after animation
-            setTimeout(() => { conf.remove(); this._animationPlaying = true; }, 2200);
+            setTimeout(() => { conf.remove(); this._animationPlaying = false; }, 2200);
         }
 
         // remove overlay after animations complete
