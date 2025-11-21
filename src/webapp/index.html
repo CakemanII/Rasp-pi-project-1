@@ -23,6 +23,12 @@
             <div class="timer" id="timer">Time: 0.0s</div>
         </header>
 
+        <!-- center timer + flash indicator (for sequence playback) -->
+        <div id="center-overlay" aria-hidden="false">
+            <div id="center-timer" class="center-timer" aria-live="polite">0.0s</div>
+            <div id="flash-indicator" class="flash-indicator" aria-live="polite" style="display:none">LIGHTS FLASHING</div>
+        </div>
+
         <!-- Progress: shows the correctly guessed colors for the current round -->
         <div id="progress" class="progress" aria-live="polite" aria-label="Guessed colors"></div>
 

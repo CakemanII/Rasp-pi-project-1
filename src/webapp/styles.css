@@ -43,6 +43,58 @@ body {
     font-size: 20px;
 }
 
+/* Center overlay timer + status */
+#center-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 50;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.center-timer {
+    font-weight: 900;
+    letter-spacing: 1.4px;
+    font-size: 86px;
+    color: #ffdce0;
+    text-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    transform: translateZ(0);
+    pointer-events: none;
+}
+
+.flash-indicator {
+    font-weight: 800;
+    padding: 8px 14px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255,90,110,0.14), rgba(255,160,100,0.08));
+    color: #ffb7c2;
+    font-size: 14px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+    border: 1px solid rgba(255,255,255,0.02);
+    filter: drop-shadow(0 8px 20px rgba(255,128,140,0.06));
+    opacity: 0; /* animated on show */
+    transform-origin: center;
+    pointer-events: none;
+}
+
+@keyframes flashPulse {
+    0% { opacity: 0.2; transform: scale(.98) }
+    50% { opacity: 1; transform: scale(1.06) }
+    100% { opacity: 0.2; transform: scale(.98) }
+}
+
+.flash-indicator.show {
+    animation: flashPulse 900ms cubic-bezier(.2,.9,.3,.9) infinite;
+    opacity: 1;
+}
+
+/* hide the top-right small timer visually (we'll use rendered center-timer) */
+.hud .timer { display: none; }
+
 /* LIVES --------------------------------------------------------- */
 .lives {
     display: flex;
@@ -315,4 +367,5 @@ body {
     .container{ gap:18px; }
     .circle{ width:72px; height:72px }
     .start-card{ padding:22px }
+    .center-timer { font-size: 48px }
 }

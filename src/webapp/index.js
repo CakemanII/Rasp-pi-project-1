@@ -110,8 +110,12 @@ class TimerVisualHandler {
     updateTimer() {
         fetch('/api/time_remaining').then(r => r.ok ? r.json() : null)
         .then((timeReq) => {
-            const time_remaining = timeReq.time_remaining;
-            this.timerBox.textContent = `Time: ${Math.max(0, time_remaining).toFixed(0)}s`;
+            const time_remaining = timeReq ? timeReq.time_remaining : 0;
+            // Update both HUD timer and centered timer (if available)
+            const formatted = `${Math.max(0, time_remaining).toFixed(1)}s`;
+            if (this.timerBox) this.timerBox.textContent = formatted;
+            const center = document.getElementById('center-timer');
+            if (center) center.textContent = formatted;
         })
         .catch(() => null);
     }
@@ -326,7 +330,21 @@ class GameScreenHandler {
 
     displayStartRoundFlashingText(visible)
     {
-        
+        // Create indicator lazily
+        if (!this.startRoundIndicator) {
+            this.startRoundIndicator = document.getElementById('flash-indicator');
+        }
+
+        if (!this.startRoundIndicator) return;
+
+        if (visible) {
+            this.startRoundIndicator.style.display = '';
+            this.startRoundIndicator.classList.add('show');
+        } else {
+            this.startRoundIndicator.classList.remove('show');
+            // Wait the pulse animation to finish before hiding
+            setTimeout(() => { this.startRoundIndicator.style.display = 'none'; }, 250);
+        }
     }
 
     update(statusData)
@@ -335,7 +353,7 @@ class GameScreenHandler {
         const is_running = statusData["game_started"];
         const start_round_flashing = statusData["start_round_flashing"];
 
-        displayStartRoundFlashingText(start_round_flashing);
+        this.displayStartRoundFlashingText(start_round_flashing);
 
         if (gameover) {
             this.showRestartScreen();
