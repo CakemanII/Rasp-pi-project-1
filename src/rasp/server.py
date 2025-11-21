@@ -45,8 +45,7 @@ def get_inputted_colors():
     
     return jsonify({
         # Only provide the already correctly guessed colors to the client
-        "colors": game._correctColors[:game._correctInputCount],
-        "correct_count": game._correctInputCount,
+        "correctly_inputted_colors": game._correctColors[:game._correctInputCount],
         "total": len(game._correctColors)
     })
 

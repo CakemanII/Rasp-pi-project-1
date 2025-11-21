@@ -105,8 +105,8 @@ class ProgressVisualHandler {
         // Clear existing
         this.progressBox.innerHTML = '';
         // Determine total slots
-        const totalSlots = colorData ? colorData.length : 3;
-        const inputtedColors = colorData ? colorData.correctlyInputtedColors : [];
+        const totalSlots = colorData ? colorData["total"] : 0;
+        const inputtedColors = colorData ? colorData["correctly_inputted_colors"] : [];
 
         for (let i = 0; i < totalSlots; i++) {
             const chip = document.createElement('div');
@@ -229,9 +229,12 @@ class CelebrationVisualHandler {
         }, 1400);
     }
 
-    update(colorsData) {
-        // Add a condition to ensure the server confirms the combo completion
-        if (colorsData.roundCompleted) {
+    update(statusData) {
+        const is_round_over = statusData["is_round_complete"];
+        const is_gameover = statusData["is_gameover"];
+        const is_running = statusData["game_started"];
+
+        if (is_round_over && !is_gameover && is_running) {
             this.playRoundCompleteAnimation();
         }
     }
@@ -285,6 +288,20 @@ class GameScreenHandler {
         startScreen.style.display = 'none';
         gameRoot.setAttribute('aria-hidden','false');
     }
+
+    update(statusData)
+    {
+        const gameover = statusData["is_gameover"];
+        const is_running = statusData["game_started"];
+
+        if (gameover) {
+            this.showRestartScreen();
+        } else if (!is_running) {
+            this.showStartScreen();
+        } else {
+            this.showGameScreen();
+        }
+    }
 }
 
 class VisualManager {
@@ -300,14 +317,16 @@ class VisualManager {
     }
 
     updateVisuals() {
-        results = fetch('/api/status').then(r => r.ok ? r.json() : null).catch(() => null);
-        const lives = results.lives;
+        const statusResults = fetch('/api/status').then(r => r.ok ? r.json() : null).catch(() => null);
+        const lives = statusResults["lives"];
         const colorData = fetch('/api/inputted_colors').then(r => r.ok ? r.json() : null).catch(() => null);
 
         // Update each visual component as needed
         this.heartHandler.update(lives);
         this.timerHandler.updateTimer();
         this.progressHandler.update(colorData);
+        this.celebrationHandler.update(statusResults);
+        this.gameScreenHandler.update(statusResults);
     }
 }
 
