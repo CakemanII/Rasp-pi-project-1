@@ -1,5 +1,6 @@
 from gpiozero import LED
 from time import sleep
+import datetime
 
 LED_PINS = {
     "blue": 17,
@@ -21,16 +22,12 @@ class LEDController:
                 led.off()
                 sleep(pause_duration)
 
-    def celebrate(self, duration: float = 2.0, flash_interval: float = 0.2):
+    def celebrate(self):
         """Flash all LEDs in a celebratory pattern."""
-        end_time = sleep.time() + duration
-        while sleep.time() < end_time:
+        for _ in range(3):
             for led in self.leds.values():
                 led.on()
-            sleep(flash_interval)
+            sleep(0.3)
             for led in self.leds.values():
                 led.off()
-            sleep(flash_interval)
-
-controller = LEDController()
-controller.flash_sequence(["blue", "blue", "blue"], 0.15, 0.1)
+            sleep(0.3)
