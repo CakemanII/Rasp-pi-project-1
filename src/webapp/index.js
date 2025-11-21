@@ -217,10 +217,13 @@ class CelebrationVisualHandler {
     constructor() 
     {
         this._animationPlaying = false;
+        this._playedThisRound = false;
     }
 
     playRoundCompleteAnimation() {
         if (this._animationPlaying) return;
+
+        this._playedThisRound = true;
         this._animationPlaying = true;
         
         // overlay card
@@ -250,7 +253,7 @@ class CelebrationVisualHandler {
             conf.style.animationDuration = (900 + Math.random() * 800) + 'ms';
             document.body.appendChild(conf);
             // remove after animation
-            setTimeout(() => { conf.remove(); this._animationPlaying = false; }, 4200);
+            setTimeout(() => { conf.remove(); this._animationPlaying = false; }, 2200);
         }
 
         // remove overlay after animations complete
@@ -264,7 +267,11 @@ class CelebrationVisualHandler {
         const is_gameover = statusData["is_gameover"];
         const is_running = statusData["game_started"];
 
-        if (is_round_over && !is_gameover && is_running) {
+        if (!is_round_over && !is_gameover && is_running) {
+            this._playedThisRound = false;
+        }
+
+        if (is_round_over && !is_gameover && is_running && !this._playedThisRound) {
             this.playRoundCompleteAnimation();
         }
     }
