@@ -250,40 +250,36 @@ class GameScreenHandler {
             .then(res => res.json())
             .then(() => {
                 // hide start screen
-                startScreen.style.display = 'none';
-                gameRoot.setAttribute('aria-hidden','false');
+                this.startScreen.style.display = 'none';
+                this.gameRoot.setAttribute('aria-hidden','false');
             })
             .catch(() => {
                 // still hide and start polling for local dev
-                startScreen.style.display = 'none';
-                gameRoot.setAttribute('aria-hidden','false');
+                this.startScreen.style.display = 'none';
+                this.gameRoot.setAttribute('aria-hidden','false');
             });
         });
     }
 
     showRestartScreen() {
-        startScreen.style.display = 'flex';
-        gameRoot.setAttribute('aria-hidden','true');
-        startScreen.querySelector('#start-btn').textContent = 'Restart';
-        clearInterval(pollInterval);
-        pollInterval = null;
+        this.startScreen.style.display = 'flex';
+        this.gameRoot.setAttribute('aria-hidden','true');
+        this.startScreen.querySelector('#start-btn').textContent = 'Restart';
         renderProgress([], 0);
     }
 
     showStartScreen()
     {
-        startScreen.style.display = 'flex';
-        gameRoot.setAttribute('aria-hidden','true');
-        startScreen.querySelector('#start-btn').textContent = 'Start';
-        clearInterval(pollInterval);
-        pollInterval = null;
+        this.startScreen.style.display = 'flex';
+        this.gameRoot.setAttribute('aria-hidden','true');
+        this.startScreen.querySelector('#start-btn').textContent = 'Start';
         renderProgress([], 0);
     }
 
     showGameScreen()
     {
-        startScreen.style.display = 'none';
-        gameRoot.setAttribute('aria-hidden','false');
+        this.startScreen.style.display = 'none';
+        this.gameRoot.setAttribute('aria-hidden','false');
     }
 
     update(statusData)
