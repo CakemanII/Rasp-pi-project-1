@@ -354,7 +354,7 @@ class GameScreenHandler {
         }
 
         // Convert to 1-based human friendly round number
-        const displayNumber = Math.max(0, Number(roundNumber)) + 1;
+        const displayNumber = Math.max(0, Number(roundNumber));
         this.roundNumberDisplay.textContent = `${displayNumber}`;
     }
 
