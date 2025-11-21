@@ -337,11 +337,14 @@ class GameScreenHandler {
 
         if (!this.startRoundIndicator) return;
 
+        const container = document.querySelector('.container');
         if (visible) {
             this.startRoundIndicator.style.display = '';
             this.startRoundIndicator.classList.add('show');
+            if (container) container.classList.add('flashing');
         } else {
             this.startRoundIndicator.classList.remove('show');
+            if (container) container.classList.remove('flashing');
             // Wait the pulse animation to finish before hiding
             setTimeout(() => { this.startRoundIndicator.style.display = 'none'; }, 250);
         }
