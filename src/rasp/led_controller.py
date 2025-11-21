@@ -2,9 +2,9 @@ from gpiozero import LED
 from time import sleep
 
 LED_PINS = {
-    "red": 17,
+    "blue": 22,
     "green": 27,
-    "blue": 22
+    "red": 17
 }
 
 class LEDController:
