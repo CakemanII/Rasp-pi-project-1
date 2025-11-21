@@ -306,7 +306,7 @@ class VisualManager {
         this.progressHandler = new ProgressVisualHandler();
         this.buttonHandler = new ButtonVisualHandler();
         this.celebrationHandler = new CelebrationVisualHandler();
-        this.gameScreenHandler = new GameScreenHandler();
+        this.gameScreenHandler = new GameScreenHandler(this.progressHandler);
 
         setInterval(() => this.updateVisuals(), 100);
     }
