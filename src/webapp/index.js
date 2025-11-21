@@ -1,7 +1,7 @@
 class HeartVisualHandler {
     constructor() {
         this.livesBox = document.getElementById("lives");
-        this._prev_lives = 3;
+        this._prev_lives = null;
     }
 
     renderHearts() {
@@ -81,7 +81,7 @@ class HeartVisualHandler {
             this._prev_lives--;
         }
 
-        if (livesCount > this._prev_lives) {
+        if (livesCount < this._prev_lives) {
             this.renderHearts();
             this._prev_lives = livesCount;
         }
