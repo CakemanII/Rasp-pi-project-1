@@ -223,6 +223,7 @@ class ColorGame:
         self._seconds_remaining = 0
         self._elapsingTime = False
         self._gameStarted = False
+        self._gameover = False
         self._correctColors = []
         self._correctInputCount = 0
         self._input_enabled = False
