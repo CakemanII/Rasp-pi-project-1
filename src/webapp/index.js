@@ -97,7 +97,7 @@ class HeartVisualHandler {
 class TimerVisualHandler {
     constructor() {
         this.timerBox = document.getElementById("timer");
-        setInterval(() => this.updateTimer(), 20);
+        setInterval(() => this.updateTimer(), 40);
     }
 
     updateTimer() {
@@ -105,7 +105,7 @@ class TimerVisualHandler {
         .then((timeReq) => {
             const time_remaining = timeReq ? timeReq.time_remaining : 0;
             // Update both HUD timer and centered timer (if available)
-            const formatted = `${Math.max(0, time_remaining).toFixed(1)}s`;
+            const formatted = `${Math.max(0, time_remaining).toFixed(0)}s`;
             if (this.timerBox) this.timerBox.textContent = formatted;
             const center = document.getElementById('center-timer');
             if (center) center.textContent = formatted;
