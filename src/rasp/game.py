@@ -22,6 +22,8 @@ class ColorGame:
         self._elapsingTime: bool = False
         self._gameStarted: bool = False
 
+        self._gameover: bool = False
+
         self._input_enabled: bool = False
 
         self._max_time: float = initial_time
@@ -145,7 +147,7 @@ class ColorGame:
         self._correctInputCount = 0
 
         # Check for game over
-        if self.isGameOver():
+        if self._lives <= 0 and not self.isGameOver():
             self._gameOver()
         else:
             # Flash the correct sequence again
@@ -156,6 +158,7 @@ class ColorGame:
 
     def _gameOver(self):
         # User lost
+        self._gameover = True
         self._input_enabled = False
         self._stopElapseTime()
         # Flash game over sequence
@@ -179,7 +182,7 @@ class ColorGame:
             delta_time: Time in seconds to subtract from remaining time
         """
         self._previousTime = datetime.datetime.now()
-        while True:
+        while True:                
             time.sleep(UPDATE_TIME_DELAY)
             if self._elapsingTime == False:
                 continue
@@ -187,6 +190,10 @@ class ColorGame:
             currentTime = datetime.datetime.now()
             self._seconds_remaining -= ( currentTime - self._previousTime ).total_seconds()
             self._previousTime  = currentTime
+
+            if self._seconds_remaining <= 0:
+                self._seconds_remaining = 0
+                self._gameOver()
 
     #endregion
 
@@ -197,7 +204,7 @@ class ColorGame:
     
     def isGameOver(self) -> bool:
         # Check if the game is over
-        return self._lives <= 0 or self._seconds_remaining <= 0
+        return self._gameover
     
     def hasGameStarted(self) -> bool:
         return self._gameStarted
