@@ -6,7 +6,7 @@ class HeartVisualHandler {
 
     renderHearts() {
         this.livesBox.innerHTML = "";
-        for (let i = 0; i < _prev_lives; i++) {
+        for (let i = 0; i < this._prev_lives; i++) {
             const heartVisual = document.createElement("div");
             heartVisual.classList.add("heart");
             heartVisual.textContent = "❤️";
