@@ -4,6 +4,7 @@ from game import ColorGame
 import threading
 import time
 import os
+import socket
 
 app = Flask(__name__, static_folder="../webapp", static_url_path="/")
 
@@ -104,5 +105,21 @@ if __name__ == "__main__":
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
     logging.getLogger('flask.app').setLevel(logging.ERROR)
 
+    # Try to auto-detect a usable local IP address to bind to. This opens
+    # a UDP socket to a public address (no packets sent) to learn the
+    # outbound interface address. Fall back to 0.0.0.0 if detection fails.
+    def detect_local_ip(fallback="0.0.0.0"):
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
+                # This does not send data but forces the OS to populate the
+                # socket with the preferred outbound IP.
+                s.connect(("8.8.8.8", 80))
+                return s.getsockname()[0]
+        except Exception:
+            return fallback
+
+    host_ip = detect_local_ip()
+    print(f"Starting server on http://{host_ip}:5000 (binding to detected IP)")
+
     # Run without debug and without the reloader to avoid duplicate output
-    app.run(debug=False, use_reloader=False)
+    app.run(host=host_ip, port=5000, debug=False, use_reloader=False)
