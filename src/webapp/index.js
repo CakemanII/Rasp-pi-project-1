@@ -348,8 +348,14 @@ class GameScreenHandler {
     {
         if (!this.roundNumberDisplay) return;
         // Display 1-based round for users (round starts at 0 internally)
-        const displayNumber = Number.isFinite(roundNumber) ? roundNumber : 0;
-        this.roundNumberDisplay.textContent = `Round ${displayNumber}`;
+        if (!Number.isFinite(roundNumber)) {
+            this.roundNumberDisplay.textContent = `Round 0`;
+            return;
+        }
+
+        // Convert to 1-based human friendly round number
+        const displayNumber = Math.max(0, Number(roundNumber)) + 1;
+        this.roundNumberDisplay.textContent = `${displayNumber}`;
     }
 
     update(statusData)

@@ -44,13 +44,29 @@ body {
 }
 
 .round-counter {
-    font-weight: 700;
-    color: #ffdce0;
+    /* visually prominent circular badge centered horizontally */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 20px; /* visually matches HUD top */
+    width: 62px;
+    height: 62px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg,#ff6b7a,#ff4b5c);
+    color: #111;
     font-size: 18px;
-    border-radius: 8px;
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.02);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+    font-weight: 900;
+    border-radius: 999px;
+    box-shadow: 0 14px 44px rgba(0,0,0,0.55), inset 0 -6px 18px rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.06);
+    z-index: 55;
+    pointer-events: none;
+}
+
+@media (max-width:420px){
+    .round-counter { width: 46px; height: 46px; font-size: 14px; top: 18px }
 }
 
 /* Center overlay timer — in normal flow above the progress area */
