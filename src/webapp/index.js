@@ -66,6 +66,12 @@ class HeartVisualHandler {
     }
 
     update(livesCount) {
+        if (this._prev_lives === null) {
+            this._prev_lives = livesCount;
+            this.renderHearts();
+            return;
+        }
+
         // Fetch current lives from server
         if (livesCount === this._prev_lives) return;
         
@@ -75,10 +81,10 @@ class HeartVisualHandler {
             this._prev_lives--;
         }
 
-        this._prev_lives = livesCount;
-
-        // Update prev lives
-        this.renderHearts();
+        if (livesCount > this._prev_lives) {
+            this.renderHearts();
+            this._prev_lives = livesCount;
+        }
     }
 }
 
