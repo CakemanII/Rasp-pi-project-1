@@ -31,3 +31,10 @@ class LEDController:
             for led in self.leds.values():
                 led.off()
             sleep(flash_interval)
+
+
+led = LED(17)
+
+led.on()
+sleep(2)
+led.off()
