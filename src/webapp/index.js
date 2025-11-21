@@ -135,7 +135,7 @@ class ButtonVisualHandler {
     {
         // Get the buttons
         const buttons = document.querySelectorAll('.circle');
-
+        console.log(buttons);
         // Add event listeners for visual feedback
         buttons.forEach(button => {
             button.addEventListener('click', () => {
