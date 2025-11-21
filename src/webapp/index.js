@@ -238,8 +238,10 @@ class CelebrationVisualHandler {
 }
 
 class GameScreenHandler {
-    constructor() 
+    constructor(progressVisualHandler) 
     {
+        this.progressVisualHandler = progressVisualHandler
+
         this.startScreen = document.getElementById('start-screen');
         this.startBtn = document.getElementById('start-btn');
         this.gameRoot = document.getElementById('game-root');
@@ -265,7 +267,7 @@ class GameScreenHandler {
         this.startScreen.style.display = 'flex';
         this.gameRoot.setAttribute('aria-hidden','true');
         this.startScreen.querySelector('#start-btn').textContent = 'Restart';
-        renderProgress([], 0);
+        this.progressVisualHandler.renderProgress([], 0);
     }
 
     showStartScreen()
@@ -273,7 +275,7 @@ class GameScreenHandler {
         this.startScreen.style.display = 'flex';
         this.gameRoot.setAttribute('aria-hidden','true');
         this.startScreen.querySelector('#start-btn').textContent = 'Start';
-        renderProgress([], 0);
+        this.progressVisualHandler.renderProgress([], 0);
     }
 
     showGameScreen()
