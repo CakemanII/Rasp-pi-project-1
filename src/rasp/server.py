@@ -48,7 +48,10 @@ def start_game():
 def get_inputted_colors():
     """Get the current colors for this round"""
     if game._round == 0:
-        return jsonify({"error": "Game not started"}), 400
+        return jsonify({
+            "correctly_inputted_colors": [],
+            "total": 0
+        })
     
     return jsonify({
         # Only provide the already correctly guessed colors to the client
