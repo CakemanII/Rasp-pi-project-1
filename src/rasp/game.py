@@ -39,7 +39,7 @@ class ColorGame:
         threading.Thread(target=self._elapseTime, daemon=False).start()
 
     def initLEDController(self):
-        self.led_controller = LEDController()
+        self._led_controller = LEDController()
 
     def getData(self):
         return {
@@ -67,6 +67,9 @@ class ColorGame:
 
         # Get the new colors
         self._correctColors = self._generateColors()
+
+        # Flash the colors
+        self._led_controller.flash_sequence(self._correctColors, flash_duration=0.6, pause_duration=0.3)
 
         # Start elapsing time
         self._startElapseTime()
