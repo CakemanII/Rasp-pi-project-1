@@ -8,15 +8,31 @@
 </head>
 <body>
 <div class="wrapper">
-    <div class="timer" id="timer"></div>
-    <!-- Lives -->
-    <div class="lives" id="lives"></div>
-    <div class="container">
-        <div class="circle red" data-color="red"></div>
-        <div class="circle green" data-color="green"></div>
-        <div class="circle blue" data-color="blue"></div>
+<div id="start-screen">
+    <div class="start-card">
+        <h1 class="game-title">Ultra Explosion Hearts</h1>
+        <p class="subtitle">Match the colors in order before time runs out.</p>
+        <button id="start-btn">Start Game</button>
+        <small class="hint">Click the colored circles to input a color.</small>
     </div>
 </div>
+
+<div class="wrapper" id="game-root" aria-hidden="true">
+        <header class="hud">
+            <div class="lives" id="lives" aria-live="polite"></div>
+            <div class="timer" id="timer">Time: 0.0s</div>
+        </header>
+
+        <!-- Progress: shows the correctly guessed colors for the current round -->
+        <div id="progress" class="progress" aria-live="polite" aria-label="Guessed colors"></div>
+
+        <main class="container" role="main">
+                <div class="circle red" data-color="red" tabindex="0" aria-label="Red"></div>
+                <div class="circle green" data-color="green" tabindex="0" aria-label="Green"></div>
+                <div class="circle blue" data-color="blue" tabindex="0" aria-label="Blue"></div>
+        </main>
+</div>
+
 <script src="index.js"></script>
 </body>
 </html>

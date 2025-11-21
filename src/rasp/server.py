@@ -8,7 +8,7 @@ import os
 app = Flask(__name__, static_folder="../webapp", static_url_path="/")
 
 # Initialize the game
-game = ColorGame(initial_lives=3, initial_time=30.0)
+game = ColorGame(initial_lives=7, initial_time=30.0)
 
 # Time tracking
 game_active = False
@@ -27,6 +27,8 @@ def start_game():
     """Start a new game"""
     global game_active, time_thread
     
+    if game.hasGameStarted():
+        game.resetGame()
     game.startGame()
     
     return jsonify({
@@ -36,9 +38,15 @@ def start_game():
 
 @app.route("/api/colors")
 def get_colors():
-    """Get the current inputted colors"""
+    """Get the current colors for this round"""
+    if game._round == 0:
+        return jsonify({"error": "Game not started"}), 400
+    
     return jsonify({
-        "inputted_colors": game["inputted_colors"]
+        # Only provide the already correctly guessed colors to the client
+        "colors": game._correctColors[:game._correctInputCount],
+        "correct_count": game._correctInputCount,
+        "total": len(game._correctColors)
     })
 
 
@@ -48,13 +56,25 @@ def input_color():
     # Get data from JSON body
     data = request.get_json()
     if not data or "color" not in data:
-        return jsonify({"error": "No colors provided"}), 400
+        return jsonify({"error": "No color provided"}), 400
+    
+    # Check if game has started
+    if game._round == 0:
+        return jsonify({"error": "Game not started"}), 400
+    
+    # Check if game is over
+    if game.isGameOver():
+        return jsonify({"error": "Game is over"}), 400
     
     # Get selected color
     selected_color = data["color"]
     
     # Input into the color game 
     game.colorInput(selected_color)
+
+    return jsonify({
+        "success": True
+    })
 
 
 @app.route("/api/status")
@@ -65,6 +85,7 @@ def get_status():
     return jsonify({
         "round": data["round"],
         "lives": data["lives"],
+        "game_started": game.hasGameStarted(),
         "is_game_over": game.isGameOver(),
         "is_round_complete": game.isRoundComplete()
     })
@@ -78,4 +99,10 @@ def get_time_remaining():
     })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Reduce Flask/Werkzeug verbosity in console while still showing warnings/errors
+    import logging
+    logging.getLogger('werkzeug').setLevel(logging.ERROR)
+    logging.getLogger('flask.app').setLevel(logging.ERROR)
+
+    # Run without debug and without the reloader to avoid duplicate output
+    app.run(debug=False, use_reloader=False)
