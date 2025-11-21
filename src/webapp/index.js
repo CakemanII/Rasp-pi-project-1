@@ -1,346 +1,314 @@
-const livesBox = document.getElementById("lives");
-const timerBox = document.getElementById("timer");
-const startScreen = document.getElementById('start-screen');
-const startBtn = document.getElementById('start-btn');
-const gameRoot = document.getElementById('game-root');
+class HeartVisualHandler {
+    constructor() {
+        this.livesBox = document.getElementById("lives");
+        this._prev_lives = 3;
+    }
 
-let lives = 3;
-let pollInterval = null;
-let lastClickedColor = null;
-let lastClickedBtn = null;
-let prevCorrectCount = 0;
-let prevLives = lives;
-let prevTotalSlots = 0;
-let comboLock = false;
+    renderHearts() {
+        this.livesBox.innerHTML = "";
+        for (let i = 0; i < _prev_lives; i++) {
+            const heartVisual = document.createElement("div");
+            heartVisual.classList.add("heart");
+            heartVisual.textContent = "❤️";
+            this.livesBox.appendChild(heartVisual);
+        }
+    }
 
-function renderHearts() {
-    livesBox.innerHTML = "";
-    for (let i = 0; i < lives; i++) {
-        const h = document.createElement("div");
-        h.classList.add("heart");
-        h.textContent = "❤️";
-        livesBox.appendChild(h);
+    explodeHeart() {
+        const hearts = this.livesBox.querySelectorAll(".heart");
+        if (!hearts.length) return;
+
+        const heart = hearts[hearts.length - 1];
+        const rect = heart.getBoundingClientRect();
+
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+
+        /* SCREEN SHAKE */
+        document.body.classList.add("shake");
+        setTimeout(() => document.body.classList.remove("shake"), 280);
+
+        /* SHOCKWAVE */
+        const ring = document.createElement("div");
+        ring.classList.add("shockwave");
+        ring.style.left = centerX - 40 + "px";
+        ring.style.top  = centerY - 40 + "px";
+        document.body.appendChild(ring);
+        setTimeout(() => ring.remove(), 550);
+
+        /* FLASH BURST */
+        const flash = document.createElement("div");
+        flash.classList.add("flash-burst");
+        flash.style.left = centerX - 25 + "px";
+        flash.style.top  = centerY - 25 + "px";
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 350);
+
+        /* SPARK PARTICLES */
+        for (let i = 0; i < 14; i++) {
+            const spark = document.createElement("div");
+            spark.classList.add("spark");
+
+            const angle = Math.random() * Math.PI * 2;
+            const dist = 60 + Math.random() * 40;
+
+            spark.style.left = centerX + "px";
+            spark.style.top  = centerY + "px";
+            spark.style.setProperty("--dx", `${Math.cos(angle) * dist}px`);
+            spark.style.setProperty("--dy", `${Math.sin(angle) * dist}px`);
+
+            document.body.appendChild(spark);
+            setTimeout(() => spark.remove(), 600);
+        }
+
+        /* Remove heart */
+        heart.remove();
+    }
+
+    update(livesCount) {
+        // Fetch current lives from server
+        if (livesCount === this._prev_lives) return;
+        
+        // Explode hearts for lost lives
+        while (lives < this._prev_lives) {
+            this.explodeHeart();
+            this._prev_lives--;
+        }
+
+        // Update prev lives
+        this.renderHearts();
     }
 }
 
-function updateTimer(seconds) {
-    timerBox.textContent = `Time: ${Math.max(0, seconds).toFixed(1)}s`;
-}
-
-/* ---------------- EXPLOSION EFFECT ---------------- */
-function explodeHeart() {
-    const hearts = livesBox.querySelectorAll(".heart");
-    if (!hearts.length) return;
-
-    const heart = hearts[hearts.length - 1];
-    const rect = heart.getBoundingClientRect();
-
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    /* SCREEN SHAKE */
-    document.body.classList.add("shake");
-    setTimeout(() => document.body.classList.remove("shake"), 280);
-
-    /* SHOCKWAVE */
-    const ring = document.createElement("div");
-    ring.classList.add("shockwave");
-    ring.style.left = centerX - 40 + "px";
-    ring.style.top  = centerY - 40 + "px";
-    document.body.appendChild(ring);
-    setTimeout(() => ring.remove(), 550);
-
-    /* FLASH BURST */
-    const flash = document.createElement("div");
-    flash.classList.add("flash-burst");
-    flash.style.left = centerX - 25 + "px";
-    flash.style.top  = centerY - 25 + "px";
-    document.body.appendChild(flash);
-    setTimeout(() => flash.remove(), 350);
-
-    /* SPARK PARTICLES */
-    for (let i = 0; i < 14; i++) {
-        const spark = document.createElement("div");
-        spark.classList.add("spark");
-
-        const angle = Math.random() * Math.PI * 2;
-        const dist = 60 + Math.random() * 40;
-
-        spark.style.left = centerX + "px";
-        spark.style.top  = centerY + "px";
-        spark.style.setProperty("--dx", `${Math.cos(angle) * dist}px`);
-        spark.style.setProperty("--dy", `${Math.sin(angle) * dist}px`);
-
-        document.body.appendChild(spark);
-        setTimeout(() => spark.remove(), 600);
+class TimerVisualHandler {
+    constructor() {
+        setInterval(() => this.updateTimer(), 50);
+        this.timerBox = document.getElementById("timer");
     }
 
-    /* Remove heart */
-    heart.remove();
-}
-
-/* ---------------- COMBO COMPLETE ---------------- */
-function playComboComplete() {
-    // overlay card
-    const overlay = document.createElement('div');
-    overlay.className = 'combo-overlay';
-
-    const card = document.createElement('div');
-    card.className = 'combo-card';
-    card.textContent = 'PERFECT!';
-    overlay.appendChild(card);
-    document.body.appendChild(overlay);
-
-    // spawn confetti pieces
-    const colors = ['#ff5a6e', '#ffd36b', '#6ee7b7', '#7cc5ff', '#d58cff'];
-    const count = 40;
-    for (let i = 0; i < count; i++) {
-        const conf = document.createElement('div');
-        conf.className = 'confetti';
-        conf.style.left = Math.random() * 100 + '%';
-        conf.style.background = colors[Math.floor(Math.random() * colors.length)];
-        // randomize size
-        conf.style.width = (6 + Math.random() * 12) + 'px';
-        conf.style.height = (10 + Math.random() * 20) + 'px';
-        conf.style.top = (-10 - Math.random() * 20) + 'vh';
-        conf.style.transform = `rotate(${Math.random() * 360}deg)`;
-        conf.style.animationDelay = (Math.random() * 300) + 'ms';
-        conf.style.animationDuration = (900 + Math.random() * 800) + 'ms';
-        document.body.appendChild(conf);
-        // remove after animation
-        setTimeout(() => conf.remove(), 2200);
-    }
-
-    // remove overlay after animations complete
-    setTimeout(() => {
-        overlay.remove();
-    }, 1400);
-}
-
-function fetchStatus() {
-    // Fetch status, time and colors in parallel then process together so we can
-    // detect events (correct/wrong/combo) reliably.
-    const statusReq = fetch('/api/status').then(r => r.ok ? r.json() : null).catch(() => null);
-    const timeReq = fetch('/api/time').then(r => r.ok ? r.json() : null).catch(() => null);
-    const colorsReq = fetch('/api/colors').then(r => r.ok ? r.json() : null).catch(() => null);
-
-    Promise.all([statusReq, timeReq, colorsReq]).then(([status, timeData, colorsData]) => {
-        // Process status (lives, game over)
-        if (status && status.lives !== undefined) {
-            // wrong input detection by lives decrease
-            if (status.lives < prevLives) {
-                explodeHeart();
-                // mark last clicked as wrong if exists
-                if (lastClickedBtn) {
-                    lastClickedBtn.classList.add('btn-wrong');
-                    // retrigger the flash animation so the wrong shadow appears
-                    lastClickedBtn.classList.remove('flash');
-                    void lastClickedBtn.offsetWidth;
-                    lastClickedBtn.classList.add('flash');
-                    setTimeout(() => lastClickedBtn && lastClickedBtn.classList.remove('btn-wrong'), 600);
-                }
-            }
-
-            lives = status.lives;
-            renderHearts();
-
-            if (status.is_game_over) {
-                startScreen.style.display = 'flex';
-                gameRoot.setAttribute('aria-hidden','true');
-                startScreen.querySelector('#start-btn').textContent = 'Restart';
-                clearInterval(pollInterval);
-                pollInterval = null;
-                renderProgress([], 0);
-            }
-
-            prevLives = status.lives;
-        }
-
-        // Process time
-        if (timeData && timeData.time_remaining !== undefined) {
-            updateTimer(timeData.time_remaining);
-        }
-
-        // Process colors/progress and detect correct inputs or combo completion
-        const correctlyInputtedColors = colorsData && Array.isArray(colorsData.colors) ? colorsData.colors : [];
-        const correctCount = colorsData.correct_count
-
-        // If correct_count increased, mark lastClickedBtn as correct
-        if (correctCount > prevCorrectCount) {
-            if (lastClickedBtn) {
-                lastClickedBtn.classList.add('btn-correct');
-                // retrigger flash so the correct white shadow appears
-                lastClickedBtn.classList.remove('flash');
-                void lastClickedBtn.offsetWidth;
-                lastClickedBtn.classList.add('flash');
-                lastClickedBtn.classList.remove('btn-correct');
-                setTimeout(() => lastClickedBtn && lastClickedBtn.classList.remove('btn-correct'), 500);
-            }
-        }
-
-        // If correct_count decreased unexpectedly (reset on wrong), mark wrong
-        if (correctCount < prevCorrectCount) {
-            if (lastClickedBtn) {
-                lastClickedBtn.classList.add('btn-wrong');
-                lastClickedBtn.classList.remove('flash');
-                void lastClickedBtn.offsetWidth;
-                lastClickedBtn.classList.add('flash');
-                lastClickedBtn.classList.remove('btn-wrong');
-                setTimeout(() => lastClickedBtn && lastClickedBtn.classList.remove('btn-wrong'), 600);
-            }
-        }
-
-        // Combo complete: just reached full correct count
-        // Add a condition to ensure the server confirms the combo completion
-        if (correctCount === total && total > 0 && prevCorrectCount < total && !comboLock && colorsData.combo_complete) {
-            comboLock = true;
-            playComboComplete();
-            // allow future combos after a short delay
-            setTimeout(() => { comboLock = false; }, 1400);
-        }
-
-        renderProgress(correctlyInputtedColors, correctCount);
-        prevCorrectCount = correctCount;
-        prevTotalSlots = total;
-
-        // clear lastClicked if we've handled it
-        // reset lastClicked if it was handled by above feedback
-        // (we clear it every interval to avoid stale references)
-        lastClickedBtn = null;
-        lastClickedColor = null;
-
-    }).catch(() => {
-        // on failure, clear progress but keep polling
-        renderProgress([], 0);
-    });
-}
-
-function startPolling() {
-    fetchStatus();
-    if (pollInterval) clearInterval(pollInterval);
-    pollInterval = setInterval(fetchStatus, 300);
-}
-
-/* Buttons visual feedback */
-document.querySelectorAll(".circle").forEach(btn => {
-    btn.addEventListener("click", () => {
-        btn.classList.remove("flash");
-        void btn.offsetWidth;
-        btn.classList.add("flash");
-    });
-});
-
-// Add click listeners to circles for color input
-const circles = document.querySelectorAll('.circle');
-circles.forEach(circle => {
-    circle.addEventListener('click', () => {
-        const color = circle.dataset.color;
-
-        // track the last clicked button so we can mark it correct/wrong when the server responds
-        lastClickedColor = color;
-        lastClickedBtn = circle;
-        // remove any previous feedback classes
-        circle.classList.remove('btn-correct', 'btn-wrong');
-
-        fetch('/api/input', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ color })
-        }).catch(() => {});
-    });
-});
-
-const progressBox = document.getElementById('progress');
-
-function renderProgress(colors = [], correctCount = 0) {
-    if (!progressBox) return;
-    progressBox.innerHTML = '';
-    // Determine total slots: prefer the provided colors length, otherwise show 3 placeholders
-    const total = (Array.isArray(colors) && colors.length > 0) ? colors.length : 3;
-    const safeCorrect = Math.max(0, Math.min(correctCount || 0, total));
-
-    for (let i = 0; i < total; i++) {
-        const chip = document.createElement('div');
-        chip.classList.add('chip');
-
-        if (i < safeCorrect) {
-            // fill with the correct color if available
-            const color = Array.isArray(colors) && colors[i] ? colors[i] : null;
-            if (color) chip.classList.add(color);
-            chip.classList.add('correct');
-        } else {
-            // empty placeholder slot
-            chip.classList.add('placeholder');
-        }
-
-        progressBox.appendChild(chip);
+    updateTimer() {
+        const timeReq = fetch('/api/time').then(r => r.ok ? r.json() : null).catch(() => null);
+        const time_remaining = timeReq.time_remaining;
+        this.timerBox.textContent = `Time: ${Math.max(0, time_remaining).toFixed(1)}s`;
     }
 }
 
-/* START BUTTON */
-startBtn.addEventListener('click', () => {
-    fetch('/api/start', { method: 'POST' })
-        .then(res => res.json())
-        .then(() => {
-            // hide start screen
-            startScreen.style.display = 'none';
-            gameRoot.setAttribute('aria-hidden','false');
-            // ensure UI in sync
-            startPolling();
-        })
-        .catch(() => {
-            // still hide and start polling for local dev
-            startScreen.style.display = 'none';
-            gameRoot.setAttribute('aria-hidden','false');
-            startPolling();
+class ProgressVisualHandler {
+    constructor() 
+    {
+        this.progressBox = document.getElementById('progress');
+    }
+
+    update(colorData) {
+        if (!progressBox) return;
+
+        // Clear existing
+        this.progressBox.innerHTML = '';
+        // Determine total slots
+        const totalSlots = colorData ? colorData.length : 3;
+        const inputtedColors = colorData ? colorData.correctlyInputtedColors : [];
+
+        for (let i = 0; i < totalSlots; i++) {
+            const chip = document.createElement('div');
+            chip.classList.add('chip');
+
+            if (i < inputtedColors.length) {
+                // fill with the correct color if available
+                const color = inputtedColors[i];
+                if (color) chip.classList.add(color);
+                chip.classList.add('correct');
+            } else {
+                // empty placeholder slot
+                chip.classList.add('placeholder');
+            }
+
+            this.progressBox.appendChild(chip);
+        }
+    }
+}
+
+class ButtonVisualHandler {
+    constructor() {}
+
+    initializeButtons()
+    {
+        // Get the buttons
+        const buttons = document.querySelectorAll('.circle');
+
+        // Add event listeners for visual feedback
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                button.classList.remove('flash');
+                void button.offsetWidth; // Trigger reflow for restart animation
+                button.classList.add('flash');
+            });
         });
-});
 
-// initial render
-renderHearts();
+        // Add click listeners to circles for color input
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const color = button.dataset.color;
+                // Send the color input to the server
+                const results = fetch('/api/input', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ color })
+                }).catch(() => {});
 
-// Initialize UI state from server: if a game is already started, skip start screen
-function initFromServer() {
-    // initialize status and colors together
-    Promise.all([
-        fetch('/api/status').then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('/api/time').then(r => r.ok ? r.json() : null).catch(() => null),
-        fetch('/api/colors').then(r => r.ok ? r.json() : null).catch(() => null)
-    ]).then(([status, timeData, colorsData]) => {
-        if (status && status.lives !== undefined) {
-            lives = status.lives;
-            renderHearts();
+                // Visual feedback handled in the click listener above
+                const feedback = results["feedback"];
+                if (feedback === "success") {
+                    button.classList.add('btn-correct');
+                    // retrigger flash so the correct white shadow appears
+                    button.classList.remove('flash');
+                    void button.offsetWidth;
+                    button.classList.add('flash');
+                    button.classList.remove('btn-correct');
+                    setTimeout(() => button && button.classList.remove('btn-correct'), 500);
+
+                } else if (feedback === "wrong") {
+                    // Mark button as wrong
+                    button.classList.add('btn-wrong');
+                    button.classList.remove('flash');
+                    void button.offsetWidth;
+                    button.classList.add('flash');
+                    button.classList.remove('btn-wrong');
+                    setTimeout(() => button && button.classList.remove('btn-wrong'), 600);
+
+                } else if (feedback === "input_disabled") {
+                    // Don't provide feedback if input is disabled
+                }
+            });
+        });
+    }
+}
+
+class CelebrationVisualHandler {
+    constructor() 
+    {
+        this._animationPlaying = false;
+    }
+
+    playRoundCompleteAnimation() {
+        if (this._animationPlaying) return;
+        this._animationPlaying = true;
+        
+        // overlay card
+        const overlay = document.createElement('div');
+        overlay.className = 'combo-overlay';
+
+        const card = document.createElement('div');
+        card.className = 'combo-card';
+        card.textContent = 'PERFECT!';
+        overlay.appendChild(card);
+        document.body.appendChild(overlay);
+
+        // spawn confetti pieces
+        const colors = ['#ff5a6e', '#ffd36b', '#6ee7b7', '#7cc5ff', '#d58cff'];
+        const count = 40;
+        for (let i = 0; i < count; i++) {
+            const conf = document.createElement('div');
+            conf.className = 'confetti';
+            conf.style.left = Math.random() * 100 + '%';
+            conf.style.background = colors[Math.floor(Math.random() * colors.length)];
+            // randomize size
+            conf.style.width = (6 + Math.random() * 12) + 'px';
+            conf.style.height = (10 + Math.random() * 20) + 'px';
+            conf.style.top = (-10 - Math.random() * 20) + 'vh';
+            conf.style.transform = `rotate(${Math.random() * 360}deg)`;
+            conf.style.animationDelay = (Math.random() * 300) + 'ms';
+            conf.style.animationDuration = (900 + Math.random() * 800) + 'ms';
+            document.body.appendChild(conf);
+            // remove after animation
+            setTimeout(() => { conf.remove(); this._animationPlaying = true; }, 2200);
         }
 
-        if (timeData && timeData.time_remaining !== undefined) {
-            updateTimer(timeData.time_remaining);
-        }
+        // remove overlay after animations complete
+        setTimeout(() => {
+            overlay.remove();
+        }, 1400);
+    }
 
-        // init progress state from server if available
-        if (colorsData) {
-            const colors = Array.isArray(colorsData.colors) ? colorsData.colors : [];
-            const correctCount = typeof colorsData.correct_count === 'number' ? colorsData.correct_count : 0;
-            prevCorrectCount = correctCount;
-            prevTotalSlots = colors.length > 0 ? colors.length : 3;
-            renderProgress(colors, correctCount);
+    update(colorsData) {
+        // Add a condition to ensure the server confirms the combo completion
+        if (colorsData.roundCompleted) {
+            this.playRoundCompleteAnimation();
         }
+    }
+}
 
-        // If a game is started on the server and not over, hide the start screen
-        if (status && status.game_started && !status.is_game_over) {
-            startScreen.style.display = 'none';
-            gameRoot.setAttribute('aria-hidden','false');
-            startPolling();
-        } else {
-            // show start screen; set appropriate button text
-            startScreen.style.display = 'flex';
-            gameRoot.setAttribute('aria-hidden','true');
-        }
-    }).catch(() => {
-        // If status fails, leave start screen visible
+class GameScreenHandler {
+    constructor() 
+    {
+        this.startScreen = document.getElementById('start-screen');
+        this.startBtn = document.getElementById('start-btn');
+        this.gameRoot = document.getElementById('game-root');
+
+        /* START BUTTON */
+        this.startBtn.addEventListener('click', () => {
+            fetch('/api/start', { method: 'POST' })
+            .then(res => res.json())
+            .then(() => {
+                // hide start screen
+                startScreen.style.display = 'none';
+                gameRoot.setAttribute('aria-hidden','false');
+            })
+            .catch(() => {
+                // still hide and start polling for local dev
+                startScreen.style.display = 'none';
+                gameRoot.setAttribute('aria-hidden','false');
+            });
+        });
+    }
+
+    showRestartScreen() {
         startScreen.style.display = 'flex';
         gameRoot.setAttribute('aria-hidden','true');
-    });
+        startScreen.querySelector('#start-btn').textContent = 'Restart';
+        clearInterval(pollInterval);
+        pollInterval = null;
+        renderProgress([], 0);
+    }
+
+    showStartScreen()
+    {
+        startScreen.style.display = 'flex';
+        gameRoot.setAttribute('aria-hidden','true');
+        startScreen.querySelector('#start-btn').textContent = 'Start';
+        clearInterval(pollInterval);
+        pollInterval = null;
+        renderProgress([], 0);
+    }
+
+    showGameScreen()
+    {
+        startScreen.style.display = 'none';
+        gameRoot.setAttribute('aria-hidden','false');
+    }
 }
 
-// run initial check
-initFromServer();
+class VisualManager {
+    constructor() {
+        this.heartHandler = new HeartVisualHandler();
+        this.timerHandler = new TimerVisualHandler();
+        this.progressHandler = new ProgressVisualHandler();
+        this.buttonHandler = new ButtonVisualHandler();
+        this.celebrationHandler = new CelebrationVisualHandler();
+        this.gameScreenHandler = new GameScreenHandler();
+
+        setInterval(() => this.updateVisuals(), 100);
+    }
+
+    updateVisuals() {
+        results = fetch('/api/status').then(r => r.ok ? r.json() : null).catch(() => null);
+        const lives = results.lives;
+        const colorData = fetch('/api/colors').then(r => r.ok ? r.json() : null).catch(() => null);
+
+        // Update each visual component as needed
+        this.heartHandler.update(lives);
+        this.timerHandler.updateTimer();
+        this.progressHandler.update(colorData);
+    }
+}
+
+new VisualManager();

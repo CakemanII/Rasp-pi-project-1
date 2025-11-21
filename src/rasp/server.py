@@ -37,8 +37,8 @@ def start_game():
     })
 
 
-@app.route("/api/colors")
-def get_colors():
+@app.route("/api/inputted_colors")
+def get_inputted_colors():
     """Get the current colors for this round"""
     if game._round == 0:
         return jsonify({"error": "Game not started"}), 400
@@ -74,7 +74,7 @@ def input_color():
     game.colorInput(selected_color)
 
     return jsonify({
-        "success": True
+        "feedback": "success" # success, wrong, input_disabled
     })
 
 
@@ -92,12 +92,13 @@ def get_status():
     })
 
 
-@app.route("/api/time")
+@app.route("/api/time_remaining")
 def get_time_remaining():
     data = game.getData()
     return jsonify({
         "time_remaining": data["time_remaining"]
     })
+
 
 if __name__ == "__main__":
     # Reduce Flask/Werkzeug verbosity in console while still showing warnings/errors
