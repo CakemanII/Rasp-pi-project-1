@@ -286,6 +286,7 @@ class GameScreenHandler {
         const gameover = statusData["is_gameover"];
         const is_running = statusData["game_started"];
 
+        print("Gameover:", gameover, "Is Running:", is_running);
         if (gameover) {
             this.showRestartScreen();
         } else if (!is_running) {
