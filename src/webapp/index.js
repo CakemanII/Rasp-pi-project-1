@@ -138,7 +138,7 @@ class ButtonVisualHandler {
     {
         // Get the buttons
         const buttons = document.querySelectorAll('.circle');
-        console.log(buttons);
+
         // Add event listeners for visual feedback
         buttons.forEach(button => {
             button.addEventListener('click', () => {
@@ -174,6 +174,7 @@ class ButtonVisualHandler {
                         button.classList.remove('flash');
                         void button.offsetWidth;
                         button.classList.add('flash');
+                        setTimeout(() => { button.classList.remove('btn-wrong'); }, 500);
 
                     } else if (feedback === "input_disabled") {
                         // Don't provide feedback if input is disabled

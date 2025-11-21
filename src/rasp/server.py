@@ -78,12 +78,9 @@ def input_color():
     
     # Get selected color
     selected_color = data["color"]
-    
-    # Input into the color game 
-    game.colorInput(selected_color)
 
     return jsonify({
-        "feedback": "success" # success, wrong, input_disabled
+        "feedback": game.colorInput(selected_color)
     })
 
 

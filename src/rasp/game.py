@@ -96,15 +96,18 @@ class ColorGame:
     #endregion
 
     #region Input Handling
-    def colorInput(self, selectedColor: str):
+    def colorInput(self, selectedColor: str) -> str:
         if not self._input_enabled:
-            return
+            return "input_disabled"
         # Check if the input is correct
         targetColor = self._correctColors[self._correctInputCount]
         if selectedColor == targetColor:
-            self._correctInput()
+            threading.Thread(self._correctInput()).start()
+            return "success"
         else:
-            self._incorrectInput()
+            threading.Thread(self._incorrectInput()).start()
+            return "wrong"
+
 
     def _correctInput(self):
         # Increment correct input count
