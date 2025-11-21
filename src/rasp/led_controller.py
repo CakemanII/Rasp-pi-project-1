@@ -27,7 +27,7 @@ class LEDController:
         for _ in range(3):
             for led in self.leds.values():
                 led.on()
-            sleep(0.3)
+            sleep(0.2)
             for led in self.leds.values():
                 led.off()
-            sleep(0.3)
+            sleep(0.2)
