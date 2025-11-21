@@ -308,18 +308,11 @@ class GameScreenHandler {
         });
     }
 
-    showRestartScreen() {
-        this.startScreen.style.display = 'flex';
-        this.gameRoot.setAttribute('aria-hidden','true');
-        this.startScreen.querySelector('#start-btn').textContent = 'Restart';
-        this.progressVisualHandler.update();
-    }
-
     showStartScreen()
     {
         this.startScreen.style.display = 'flex';
         this.gameRoot.setAttribute('aria-hidden','true');
-        this.startScreen.querySelector('#start-btn').textContent = 'Start';
+        this.startScreen.querySelector('#start-btn').textContent = 'Play';
         this.progressVisualHandler.update();
     }
 
@@ -350,7 +343,7 @@ class GameScreenHandler {
         if (!this.roundNumberDisplay) return;
         // Display 1-based round for users (round starts at 0 internally)
         if (!Number.isFinite(roundNumber)) {
-            this.roundNumberDisplay.textContent = `Round 0`;
+            this.roundNumberDisplay.textContent = `0`;
             return;
         }
 
@@ -370,9 +363,7 @@ class GameScreenHandler {
 
         this.updateRoundNumberDisplay(roundNumber);
 
-        if (gameover) {
-            this.showRestartScreen();
-        } else if (!is_running) {
+        if (!is_running) {
             this.showStartScreen();
         } else {
             this.showGameScreen();
