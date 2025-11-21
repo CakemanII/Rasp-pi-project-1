@@ -159,21 +159,18 @@ class ButtonVisualHandler {
                 const feedback = results["feedback"];
                 if (feedback === "success") {
                     button.classList.add('btn-correct');
-                    // retrigger flash so the correct white shadow appears
                     button.classList.remove('flash');
                     void button.offsetWidth;
-                    button.classList.add('flash');
                     button.classList.remove('btn-correct');
-                    setTimeout(() => button && button.classList.remove('btn-correct'), 500);
+                    button.classList.add('flash');
 
                 } else if (feedback === "wrong") {
                     // Mark button as wrong
                     button.classList.add('btn-wrong');
                     button.classList.remove('flash');
                     void button.offsetWidth;
-                    button.classList.add('flash');
                     button.classList.remove('btn-wrong');
-                    setTimeout(() => button && button.classList.remove('btn-wrong'), 600);
+                    button.classList.add('flash');
 
                 } else if (feedback === "input_disabled") {
                     // Don't provide feedback if input is disabled
