@@ -87,7 +87,7 @@ class TimerVisualHandler {
     }
 
     updateTimer() {
-        const timeReq = fetch('/api/time').then(r => r.ok ? r.json() : null).catch(() => null);
+        const timeReq = fetch('/api/time_remaining').then(r => r.ok ? r.json() : null).catch(() => null);
         const time_remaining = timeReq.time_remaining;
         this.timerBox.textContent = `Time: ${Math.max(0, time_remaining).toFixed(1)}s`;
     }
@@ -302,7 +302,7 @@ class VisualManager {
     updateVisuals() {
         results = fetch('/api/status').then(r => r.ok ? r.json() : null).catch(() => null);
         const lives = results.lives;
-        const colorData = fetch('/api/colors').then(r => r.ok ? r.json() : null).catch(() => null);
+        const colorData = fetch('/api/inputted_colors').then(r => r.ok ? r.json() : null).catch(() => null);
 
         // Update each visual component as needed
         this.heartHandler.update(lives);
