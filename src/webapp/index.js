@@ -157,10 +157,15 @@ class ButtonVisualHandler {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ color })
-                }).then(() => {
-                    // Visual feedback handled in the click listener above
+                })
+                .then(async (response) => {
+                    const results = await response.json();
+                    // --- Add 50ms threshold ---
+                    await new Promise(resolve => setTimeout(resolve, 50));
+
                     const feedback = results["feedback"];
                     console.log("Feedback:", feedback);
+
                     if (feedback === "success") {
                         button.classList.add('btn-correct');
                         button.classList.remove('flash');
@@ -169,7 +174,6 @@ class ButtonVisualHandler {
                         setTimeout(() => { button.classList.remove('btn-correct'); }, 500);
 
                     } else if (feedback === "wrong") {
-                        // Mark button as wrong
                         button.classList.add('btn-wrong');
                         button.classList.remove('flash');
                         void button.offsetWidth;
@@ -177,9 +181,12 @@ class ButtonVisualHandler {
                         setTimeout(() => { button.classList.remove('btn-wrong'); }, 500);
 
                     } else if (feedback === "input_disabled") {
-                        // Don't provide feedback if input is disabled
+                        // Do nothing
                     }
-                }).catch(() => { console.log("Input request failed"); });
+                })
+                .catch(() => { 
+                    console.log("Input request failed"); 
+                });
             });
         });
     }
