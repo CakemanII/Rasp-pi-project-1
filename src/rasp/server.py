@@ -79,8 +79,11 @@ def input_color():
     # Get selected color
     selected_color = data["color"]
 
+    # Process the input and get feedback
+    feedback = game.colorInput(selected_color)
+
     return jsonify({
-        "feedback": game.colorInput(selected_color)
+        "feedback": feedback
     })
 
 
