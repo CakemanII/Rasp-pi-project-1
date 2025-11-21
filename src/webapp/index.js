@@ -286,7 +286,6 @@ class GameScreenHandler {
         const gameover = statusData["is_gameover"];
         const is_running = statusData["game_started"];
 
-        console.log("Gameover:", gameover, "Is Running:", is_running);
         if (gameover) {
             this.showRestartScreen();
         } else if (!is_running) {
@@ -310,16 +309,21 @@ class VisualManager {
     }
 
     updateVisuals() {
-        const statusResults = fetch('/api/status').then(r => r.ok ? r.json() : null).catch(() => null);
-        const lives = statusResults["lives"];
-        const colorData = fetch('/api/inputted_colors').then(r => r.ok ? r.json() : null).catch(() => null);
-
-        // Update each visual component as needed
-        this.heartHandler.update(lives);
-        this.timerHandler.updateTimer();
-        this.progressHandler.update(colorData);
-        this.celebrationHandler.update(statusResults);
-        this.gameScreenHandler.update(statusResults);
+        fetch('/api/status').then(r => r.ok ? r.json() : null)
+        .then((results) => {
+            const lives = results["lives"];
+            this.heartHandler.update(lives);
+            this.celebrationHandler.update(results);
+            this.gameScreenHandler.update(results);
+        })
+        .catch(() => null);
+        
+        fetch('/api/inputted_colors').then(r => r.ok ? r.json() : null)
+        .then((colorData) => {
+            this.timerHandler.updateTimer();
+            this.progressHandler.update(colorData);
+        })
+        .catch(() => null);
     }
 }
 
