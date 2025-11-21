@@ -2,6 +2,7 @@ import random
 import threading
 import datetime
 import time
+from led_controller import LEDController
 
 ADDITIONAL_BUTTONS_PER_ROUND: float = 1.0 / 3
 INITIAL_BUTTON_COUNT: int = 3
@@ -30,9 +31,15 @@ class ColorGame:
         # Initialize elapse time thread
         self.initElapseTime()
 
+        # Initialize LED Controller
+        self.initLEDController()
+
     def initElapseTime(self):
         # Initialize the elapse time thread
         threading.Thread(target=self._elapseTime, daemon=False).start()
+
+    def initLEDController(self):
+        self.led_controller = LEDController()
 
     def getData(self):
         return {
