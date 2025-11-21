@@ -32,8 +32,9 @@
         <!-- Progress: shows the correctly guessed colors for the current round -->
         <div id="progress" class="progress" aria-live="polite" aria-label="Guessed colors"></div>
 
-        <!-- Flash indicator should appear under progress and above the buttons -->
-        <div id="flash-indicator" class="flash-indicator" aria-live="polite" style="display:none">LIGHTS FLASHING</div>
+           <!-- Flash indicator should appear under progress and above the buttons
+               Reserve the area at all times so showing/hiding doesn't shift layout -->
+           <div id="flash-indicator" class="flash-indicator" aria-live="polite">LIGHTS FLASHING</div>
 
         <main class="container" role="main">
                 <div class="circle red" data-color="red" tabindex="0" aria-label="Red"></div>

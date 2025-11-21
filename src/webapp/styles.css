@@ -114,9 +114,15 @@ body {
     box-shadow: 0 12px 40px rgba(0,0,0,0.45);
     border: 1px solid rgba(255,255,255,0.02);
     filter: drop-shadow(0 8px 20px rgba(255,128,140,0.06));
+    /* Reserve height so hiding doesn't reflow the page. Use opacity/visibility to hide. */
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 0; /* animated on show */
     transform-origin: center;
     pointer-events: none;
+    transition: opacity 260ms ease, transform 260ms ease;
 }
 
 @keyframes flashPulse {
@@ -127,7 +133,9 @@ body {
 
 .flash-indicator.show {
     animation: flashPulse 900ms cubic-bezier(.2,.9,.3,.9) infinite;
+    visibility: visible;
     opacity: 1;
+    transform: translateY(0);
 }
 
 /* hide the top-right small timer visually (we'll use rendered center-timer) */

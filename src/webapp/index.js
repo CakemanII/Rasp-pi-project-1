@@ -333,14 +333,15 @@ class GameScreenHandler {
     {
         const container = document.querySelector('.container');
         if (visible) {
-            this.startRoundIndicator.style.display = '';
+            // always mounted; use opacity/visibility to show so layout doesn't shift
             this.startRoundIndicator.classList.add('show');
+            this.startRoundIndicator.style.visibility = 'visible';
             if (container) container.classList.add('flashing');
         } else {
             this.startRoundIndicator.classList.remove('show');
+            // hide with animation but keep the element in the layout
+            this.startRoundIndicator.style.visibility = 'hidden';
             if (container) container.classList.remove('flashing');
-            // Wait the pulse animation to finish before hiding
-            setTimeout(() => { this.startRoundIndicator.style.display = 'none'; }, 250);
         }
     }
 
