@@ -104,7 +104,7 @@ class HeartVisualHandler {
 class TimerVisualHandler {
     constructor() {
         this.timerBox = document.getElementById("timer");
-        setInterval(() => this.updateTimer(), 50);
+        setInterval(() => this.updateTimer(), 20);
     }
 
     updateTimer() {

@@ -104,9 +104,9 @@ def get_status():
 
 @app.route("/api/time_remaining")
 def get_time_remaining():
-    data = game.getData()
+    time = game.getTimeRemaining()
     return jsonify({
-        "time_remaining": data["time_remaining"]
+        "time_remaining": time
     })
 
 

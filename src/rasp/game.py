@@ -51,8 +51,10 @@ class ColorGame:
             "lives": self._lives,
             "round": self._round,
             "correctInputCount": self._correctInputCount,
-            "time_remaining": self._seconds_remaining
         }
+    
+    def getTimeRemaining(self) -> float:
+        return self._seconds_remaining
 
     def startGame(self):
         '''
