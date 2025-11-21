@@ -278,6 +278,7 @@ class GameScreenHandler {
         this.startScreen = document.getElementById('start-screen');
         this.startBtn = document.getElementById('start-btn');
         this.gameRoot = document.getElementById('game-root');
+        this.startRoundIndicator = null;
 
         /* START BUTTON */
         this.startBtn.addEventListener('click', () => {
@@ -316,10 +317,18 @@ class GameScreenHandler {
         this.gameRoot.setAttribute('aria-hidden','false');
     }
 
+    displayStartRoundFlashingText(visible)
+    {
+        
+    }
+
     update(statusData)
     {
         const gameover = statusData["is_gameover"];
         const is_running = statusData["game_started"];
+        const start_round_flashing = statusData["start_round_flashing"];
+
+        displayStartRoundFlashingText(start_round_flashing);
 
         if (gameover) {
             this.showRestartScreen();
