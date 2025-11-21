@@ -158,6 +158,7 @@ class ColorGame:
         previousTime = datetime.datetime.now()
         while not self.isGameOver() or self._gameStarted == False:
             time.sleep(UPDATE_TIME_DELAY)
+            print("E")
             if self._elapsingTime == False:
                 continue
 
