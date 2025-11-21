@@ -87,9 +87,12 @@ class TimerVisualHandler {
     }
 
     updateTimer() {
-        const timeReq = fetch('/api/time_remaining').then(r => r.ok ? r.json() : null).catch(() => null);
-        const time_remaining = timeReq.time_remaining;
-        this.timerBox.textContent = `Time: ${Math.max(0, time_remaining).toFixed(1)}s`;
+        fetch('/api/time_remaining').then(r => r.ok ? r.json() : null)
+        .then((timeReq) => {
+            const time_remaining = timeReq.time_remaining;
+            this.timerBox.textContent = `Time: ${Math.max(0, time_remaining).toFixed(1)}s`;
+        })
+        .catch(() => null);
     }
 }
 
@@ -147,32 +150,32 @@ class ButtonVisualHandler {
             button.addEventListener('click', () => {
                 const color = button.dataset.color;
                 // Send the color input to the server
-                const results = fetch('/api/input', {
+                fetch('/api/input', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ color })
+                }).then(() => {
+                    // Visual feedback handled in the click listener above
+                    const feedback = results["feedback"];
+                    console.log("Feedback:", feedback);
+                    if (feedback === "success") {
+                        button.classList.add('btn-correct');
+                        button.classList.remove('flash');
+                        void button.offsetWidth;
+                        button.classList.add('flash');
+                        setTimeout(() => { button.classList.remove('btn-correct'); }, 500);
+
+                    } else if (feedback === "wrong") {
+                        // Mark button as wrong
+                        button.classList.add('btn-wrong');
+                        button.classList.remove('flash');
+                        void button.offsetWidth;
+                        button.classList.add('flash');
+
+                    } else if (feedback === "input_disabled") {
+                        // Don't provide feedback if input is disabled
+                    }
                 }).catch(() => {});
-
-                // Visual feedback handled in the click listener above
-                const feedback = results["feedback"];
-                console.log("Feedback:", feedback);
-                if (feedback === "success") {
-                    button.classList.add('btn-correct');
-                    button.classList.remove('flash');
-                    void button.offsetWidth;
-                    button.classList.add('flash');
-                    setTimeout(() => { button.classList.remove('btn-correct'); }, 500);
-
-                } else if (feedback === "wrong") {
-                    // Mark button as wrong
-                    button.classList.add('btn-wrong');
-                    button.classList.remove('flash');
-                    void button.offsetWidth;
-                    button.classList.add('flash');
-
-                } else if (feedback === "input_disabled") {
-                    // Don't provide feedback if input is disabled
-                }
             });
         });
     }
