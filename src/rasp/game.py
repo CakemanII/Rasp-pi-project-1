@@ -29,7 +29,7 @@ class ColorGame:
         self._correctColors: list[str] = []
         self._correctInputCount: int = 0
         self._inCelebration: bool = False
-        self._flashingLightsAtStartOfRound: bool = False
+        self._flashingCorrectLightSequence: bool = False
 
         self._previousTime = None
 
@@ -79,12 +79,12 @@ class ColorGame:
         self._correctColors = self._generateColors()
 
         # Delay
-        self._flashingLightsAtStartOfRound = True
+        self._flashingCorrectLightSequence = True
         time.sleep(1)
 
         # Flash the colors
         self._led_controller.flash_sequence(self._correctColors, flash_duration=0.6, pause_duration=0.3)
-        self._flashingLightsAtStartOfRound = False
+        self._flashingCorrectLightSequence = False
 
         # Start elapsing time
         self._startElapseTime()
@@ -148,7 +148,9 @@ class ColorGame:
             self._gameOver()
         else:
             # Flash the correct sequence again
+            self._flashingCorrectLightSequence = True
             self._led_controller.flash_sequence(self._correctColors, flash_duration=0.6, pause_duration=0.3)
+            self._flashingCorrectLightSequence = False
     #endregion
 
     def _gameOver(self):
@@ -199,8 +201,8 @@ class ColorGame:
     def isInputEnabled(self) -> bool:
         return self._input_enabled
     
-    def isStartOfRoundFlashing(self) -> bool:
-        return self._flashingLightsAtStartOfRound
+    def isFlashingSequence(self) -> bool:
+        return self._flashingCorrectLightSequence
 
     #endregion
 
@@ -214,5 +216,5 @@ class ColorGame:
         self._correctInputCount = 0
         self._input_enabled = False
         self._inCelebration = False
-        self._flashingLightsAtStartOfRound = False
+        self._flashingCorrectLightSequence = False
         self._previousTime = None

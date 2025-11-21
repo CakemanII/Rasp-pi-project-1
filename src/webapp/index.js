@@ -362,7 +362,7 @@ class GameScreenHandler {
     {
         const gameover = statusData["is_gameover"];
         const is_running = statusData["game_started"];
-        const start_round_flashing = statusData["start_round_flashing"];
+        const start_round_flashing = statusData["flashing_seq"];
         const roundNumber = statusData["round"];
 
         this.displayStartRoundFlashingText(start_round_flashing);
