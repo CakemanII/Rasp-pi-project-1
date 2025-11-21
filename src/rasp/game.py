@@ -31,6 +31,8 @@ class ColorGame:
         self._inCelebration: bool = False
         self._flashingLightsAtStartOfRound: bool = False
 
+        self._previousTime = None
+
         # Initialize elapse time thread
         self.initElapseTime()
 
@@ -154,8 +156,8 @@ class ColorGame:
 
     #region Elapse Time Handling
     def _startElapseTime(self):
-        print("Starting time elapsed")
         self._elapsingTime = True
+        self._previousTime  = datetime.datetime.now()
     
     def _stopElapseTime(self):
         self._elapsingTime = False
@@ -168,15 +170,15 @@ class ColorGame:
         Args:
             delta_time: Time in seconds to subtract from remaining time
         """
-        previousTime = datetime.datetime.now()
+        self._previousTime = datetime.datetime.now()
         while not self.isGameOver() or self._gameStarted == False:
             time.sleep(UPDATE_TIME_DELAY)
             if self._elapsingTime == False:
                 continue
 
             currentTime = datetime.datetime.now()
-            self._seconds_remaining -= ( currentTime - previousTime ).total_seconds()
-            previousTime = currentTime
+            self._seconds_remaining -= ( currentTime - self._previousTime ).total_seconds()
+            self._previousTime  = currentTime
 
     #endregion
 
@@ -208,3 +210,7 @@ class ColorGame:
         self._gameStarted = False
         self._correctColors = []
         self._correctInputCount = 0
+        self._input_enabled = False
+        self._inCelebration = False
+        self._flashingLightsAtStartOfRound = False
+        self._previousTime = None
