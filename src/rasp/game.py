@@ -83,6 +83,7 @@ class ColorGame:
         time.sleep(1)
 
         # Flash the colors
+        while self._led_controller._flashing: time.sleep(0.1)
         self._led_controller.flash_sequence(self._correctColors, flash_duration=0.6, pause_duration=0.3)
         self._flashingCorrectLightSequence = False
 
@@ -156,7 +157,10 @@ class ColorGame:
     def _gameOver(self):
         # User lost
         self._input_enabled = False
-        pass
+        self._stopElapseTime()
+        # Flash game over sequence
+        while self._led_controller._flashing: time.sleep(0.1)
+        self._led_controller.game_over()
 
     #region Elapse Time Handling
     def _startElapseTime(self):

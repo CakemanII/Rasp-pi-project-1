@@ -38,3 +38,15 @@ class LEDController:
                 led.off()
             sleep(0.25)
         self._flashing = False
+
+    def game_over(self):
+        """Flash a game over pattern."""
+        self._flashing = True
+        for _ in range(4):
+            for led in self.leds.values():
+                led.on()
+            sleep(0.5)
+            for led in self.leds.values():
+                led.off()
+            sleep(0.5)
+        self._flashing = False
