@@ -22,7 +22,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 40px;
+    gap: 18px; /* reduce vertical gap between main sections */
 }
 
 /* HUD */
@@ -45,10 +45,10 @@ body {
 
 .round-counter {
     /* visually prominent circular badge centered horizontally */
-    position: absolute;
+    position: fixed; /* fix to viewport so it's centered across the whole screen */
     left: 50%;
     transform: translateX(-50%);
-    top: 20px; /* visually matches HUD top */
+    top: 14px; /* visually matches HUD top */
     width: 62px;
     height: 62px;
     display: flex;
@@ -78,14 +78,14 @@ body {
     z-index: 20;
     flex-direction: column;
     gap: 8px;
-    margin-top: 28px;
+    margin-top: 14px;
     margin-bottom: 2px;
 }
 
 .center-timer {
     font-weight: 900;
     letter-spacing: 1.4px;
-    font-size: 86px;
+    font-size: 68px; /* slightly smaller so things fit nicer vertically */
     color: #ffdce0;
     text-shadow: 0 30px 60px rgba(0,0,0,0.6);
     transform: translateZ(0);
@@ -115,14 +115,14 @@ body {
     border: 1px solid rgba(255,255,255,0.02);
     filter: drop-shadow(0 8px 20px rgba(255,128,140,0.06));
     /* Reserve height so hiding doesn't reflow the page. Use opacity/visibility to hide. */
-    min-height: 48px;
+    min-height: 36px; /* reduce reserved vertical space */
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0; /* animated on show */
     transform-origin: center;
     pointer-events: none;
-    transition: opacity 260ms ease, transform 260ms ease;
+    transition: opacity 260ms ease, transform 260ms ease, visibility 200ms ease;
 }
 
 @keyframes flashPulse {
@@ -136,6 +136,12 @@ body {
     visibility: visible;
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Progress tweaks to reduce vertical spacing */
+.progress {
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
 /* hide the top-right small timer visually (we'll use rendered center-timer) */

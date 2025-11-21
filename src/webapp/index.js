@@ -67,7 +67,6 @@ class HeartVisualHandler {
     }
 
     update(livesCount) {
-        console.log(1);
 
         // First update — just render and store value
         if (this._prev_lives === null) {
@@ -76,12 +75,8 @@ class HeartVisualHandler {
             return;
         }
 
-        console.log(2);
-
         // No change → nothing to do
         if (livesCount === this._prev_lives) return;
-
-        console.log(3);
 
         // If lives decreased → play explosion animation
         if (livesCount < this._prev_lives) {
@@ -96,8 +91,6 @@ class HeartVisualHandler {
             this._prev_lives = livesCount;
             this.renderHearts();
         }
-
-        console.log(4);
     }
 }
 
@@ -347,8 +340,9 @@ class GameScreenHandler {
             return;
         }
 
-        // Convert to 1-based human friendly round number
-        const displayNumber = Math.max(0, Number(roundNumber));
+            // Convert to 1-based human friendly round number
+            const displayNumber = Math.max(0, Number(roundNumber)) + 1;
+            // Show as simple centered number (users asked for 'absolutely centered')
         this.roundNumberDisplay.textContent = `${displayNumber}`;
     }
 
@@ -363,7 +357,7 @@ class GameScreenHandler {
 
         this.updateRoundNumberDisplay(roundNumber);
 
-        if (!is_running) {
+        if (!is_running || gameover) {
             this.showStartScreen();
         } else {
             this.showGameScreen();
