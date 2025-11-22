@@ -101,7 +101,7 @@ def get_status():
         "is_round_complete": game.isRoundComplete()
     })
 
-#
+
 @app.route("/api/time_remaining")
 def get_time_remaining():
     time = game.getTimeRemaining()
